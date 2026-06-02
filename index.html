@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -26,17 +26,14 @@
       content="Guess the Etrian Odyssey music from the intro in as little tries as possible."
     />
 
-    <meta
-      itemprop="image"
-      content="https://vgmsite.com/soundtracks/etrian-odyssey-untold/01%20-%20Front.jpg"
-    />
+    <meta itemprop="image" content="./share_image.png?format=jpg&name=small" />
     <meta
       property="og:image"
-      content="https://vgmsite.com/soundtracks/etrian-odyssey-untold/01%20-%20Front.jpg"
+      content="./share_image.png?format=jpg&name=small"
     />
     <meta
       name="twitter:image"
-      content="https://vgmsite.com/soundtracks/etrian-odyssey-untold/01%20-%20Front.jpg"
+      content="./share_image.png?format=jpg&name=small"
     />
 
     <link rel="icon" type="image/png" href="./favicon.png" />
@@ -59,10 +56,9 @@
 
     <script src="music-list.js"></script>
     <script src="music-links.js"></script>
-    <script src="musics.js"></script>
     <script defer src="main.js"></script>
     <script>
-      if (location.protocol != "file:" && location.protocol != "https:") {
+      if (location.protocol !== "file:" && location.protocol !== "https:") {
         location.href =
           "https:" +
           window.location.href.substring(window.location.protocol.length);
