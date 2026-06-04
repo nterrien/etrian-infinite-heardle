@@ -17,6 +17,13 @@ var app = (function () {
   if (localStorage.getItem(removeTagsLocationStorage)) {
     removeTags = JSON.parse(localStorage.getItem(removeTagsLocationStorage));
   }
+  const namesNotUsedLocationStorage = url + "-namesNotUsed"
+  let namesNotUsed = [];
+  if (localStorage.getItem(namesNotUsedLocationStorage)) {
+    namesNotUsed = JSON.parse(localStorage.getItem(namesNotUsedLocationStorage));
+  } else {
+    namesNotUsed = [1]
+  }
 
   // allTags, musicNameList are defined in music-list.js and musicListWithLinks is defined in music-links.js
 
@@ -28,6 +35,9 @@ var app = (function () {
     new Array(musicNameList.length).fill({
       id: -1,
       name: "",
+      help: "",
+      game: "",
+      unofficial: "",
       tags: allTags,
     })
   );
@@ -89,7 +99,7 @@ var app = (function () {
       removedTagsList = [];
     }
     filteredMusicNameList = musicNameList.filter(
-      (m) => !removedGameList.includes(getOneGameOrArtistFromMusic(m))
+      (m) => !removedGameList.includes(m.game)
     );
     if (allTags.length > 0) {
       filteredMusicNameList = filteredMusicNameList.filter((m) =>
@@ -110,15 +120,26 @@ var app = (function () {
   }
 
   function saveFilteredGames(filteredGames) {
-    removeGames = filteredGames;
-    localStorage.setItem(removeGamesLocationStorage, JSON.stringify(filteredGames)),
-      window.location.reload();
+    oldRemoveGames = new Set(removeGames)
+    if (oldRemoveGames.size != filteredGames.length || !filteredGames.every(g => oldRemoveGames.has(g))) {
+      removeGames = filteredGames;
+      localStorage.setItem(removeGamesLocationStorage, JSON.stringify(filteredGames));
+      // window.location.reload();
+    }
   }
 
   function saveFilteredTags(filteredTags) {
-    removeTags = filteredTags;
-    localStorage.setItem(removeTagsLocationStorage, JSON.stringify(filteredTags)),
-      window.location.reload();
+    oldRemoveTags = new Set(removeTags)
+    if (oldRemoveTags.size != filteredTags.length || !filteredTags.every(t => oldRemoveTags.has(t))) {
+      removeTags = filteredTags;
+      localStorage.setItem(removeTagsLocationStorage, JSON.stringify(filteredTags));
+      // window.location.reload();
+    }
+  }
+
+  function saveNamesNotUsed(names) {
+    namesNotUsed = names;
+    localStorage.setItem(namesNotUsedLocationStorage, JSON.stringify(names));
   }
 
   function t(e) {
@@ -518,8 +539,8 @@ var app = (function () {
       case "pn":
         aria = "Play";
         break;
-      case "filterIco":
-        aria = "Filter";
+      case "settingsIco":
+        aria = "Settings";
         break;
     }
     return {
@@ -889,7 +910,7 @@ var app = (function () {
     };
   }
 
-  function filterIco(e) {
+  function settingsIco(e) {
     let t, r;
     return {
       c() {
@@ -898,12 +919,12 @@ var app = (function () {
           M(
             r,
             "d",
-            "M 2 5 C 2 3.34375 3.34375 2 5 2 L 19 2 C 20.65625 2 22 3.34375 22 5 L 22 6.171875 C 22 6.96875 21.683594 7.730469 21.121094 8.292969 L 15.292969 14.121094 C 15.105469 14.308594 15 14.5625 15 14.828125 L 15 17.171875 C 15 17.96875 14.683594 18.730469 14.121094 19.292969 L 11.917969 21.496094 C 10.84375 22.570312 9 21.808594 9 20.285156 L 9 14.828125 C 9 14.5625 8.894531 14.308594 8.707031 14.121094 L 2.878906 8.292969 C 2.316406 7.730469 2 6.96875 2 6.171875 Z M 2 5 "
+            "m 0.21064201,0.16384524 -0.060461,-0.0254377 c -0.0125241,-0.005265 -0.0271453,-0.002378 -0.0364852,0.007208 C 0.07020427,0.19025183 0.03781367,0.24377014 0.01895607,0.30215 0.01488027,0.3147471 0.01954683,0.3284313 0.03062943,0.33625 L 0.0840516,0.3740414 c 0.01525925,0.0107628 0.02445733,0.0278213 0.02445733,0.0459668 0,0.0181399 -0.0091981,0.0351984 -0.02442187,0.0459442 L 0.03071213,0.5037268 C 0.01965911,0.5115518 0.01498024,0.5252353 0.01904472,0.5378211 0.03790758,0.596214 0.07031649,0.64973739 0.11383285,0.69436517 c 0.009346,0.009591 0.0239788,0.0124669 0.0365029,0.007185 l 0.0602159,-0.0253981 c 0.007538,-0.003227 0.0156018,-0.004813 0.0237543,-0.004813 0.0303354,3.057e-5 0.0557852,0.0219501 0.0590964,0.0508924 l 0.00732,0.063032 c 0.001536,0.0131463 0.0115789,0.0239091 0.0250304,0.0267909 0.0307961,0.006596 0.0622321,0.0100947 0.0937874,0.0104457 0.0323381,-3.5725e-4 0.063807,-0.00385 0.0946446,-0.0104401 0.0134515,-0.002887 0.0235181,-0.0136389 0.0250422,-0.0267909 l 0.007314,-0.0629839 c 0.002127,-0.018021 0.0129908,-0.0340378 0.029337,-0.0431416 0.016423,-0.009211 0.0363375,-0.0103155 0.0536643,-0.003001 l 0.0602052,0.0253981 c 0.0125241,0.005265 0.0271571,0.002378 0.0365087,-0.007185 0.0435151,-0.044625 0.0759253,-0.0981512 0.0947881,-0.15654294 0.004076,-0.0125972 -5.9072e-4,-0.0262926 -0.0116851,-0.0341114 l -0.0534222,-0.0377519 c -0.0152475,-0.0107514 -0.0242387,-0.0278156 -0.0242387,-0.0459555 0,-0.0181399 0.008991,-0.0351984 0.0242152,-0.0459384 l 0.0534517,-0.0378141 c 0.0110472,-0.007813 0.0157377,-0.0214916 0.0116793,-0.0340774 -0.0188274,-0.0584439 -0.0512245,-0.11202726 -0.0947373,-0.15671563 -0.00934,-0.009591 -0.023967,-0.0124839 -0.036491,-0.007213 l -0.0604746,0.0254433 c -0.0172383,0.00723 -0.03707,0.006166 -0.0534044,-0.002887 -0.0163344,-0.009042 -0.027228,-0.0249904 -0.0293606,-0.0429718 l -0.00726,-0.06293186 c -0.001477,-0.01299911 -0.0113425,-0.02368825 -0.0245873,-0.02671726 -0.0622706,-0.01422771 -0.12715158,-0.01422771 -0.18942209,0 -0.0132447,0.0030005 -0.0230868,0.01371815 -0.0245873,0.02671726 l -0.007266,0.06302242 c -0.002068,0.018021 -0.0125004,0.0340207 -0.0288526,0.0430907 -0.0163463,0.00907 -0.0366624,0.0101343 -0.0539597,0.002887 z M 0.4200004,0.28581772 c 0.0773165,0 0.13999641,0.0600705 0.13999641,0.1341682 0,0.0740983 -0.06268,0.13416873 -0.13999641,0.13416873 -0.0773165,0 -0.13999701,-0.0600705 -0.13999701,-0.13416873 0,-0.0740977 0.0626805,-0.1341682 0.13999701,-0.1341682 z"
           ),
           M(t, "xmlns", "http://www.w3.org/2000/svg"),
           M(t, "width", "24"),
           M(t, "height", "24"),
-          M(t, "viewBox", "0 0 24 24"),
+          M(t, "viewBox", "0 0 0.84 0.84"),
           M(t, "fill", "white");
       },
       m(e, i) {
@@ -916,7 +937,7 @@ var app = (function () {
   }
 
   function ke(e) {
-    let t, n, r, s, i, o, a, l, u, c, d, h, f, m, b, ml, bFilter, mFilter, v;
+    let t, n, r, s, i, o, a, l, u, c, d, h, f, m, b, ml, bSetting, mSetting, v;
     return (
       (i = new ae({
         props: {
@@ -973,17 +994,17 @@ var app = (function () {
         },
       })),
       ml.$on("click", e[5]),
-      (mFilter = new ae({
+      (mSetting = new ae({
         props: {
           $$slots: {
-            default: [filterIco],
+            default: [settingsIco],
           },
           $$scope: {
             ctx: e,
           },
         },
       })),
-      mFilter.$on("click", e[6]),
+      mSetting.$on("click", e[6]),
       {
         c() {
           (t = w("header")),
@@ -1003,8 +1024,8 @@ var app = (function () {
             Q(m.$$.fragment),
             (b = x()),
             Q(ml.$$.fragment),
-            (bFilter = x()),
-            Q(mFilter.$$.fragment),
+            (bSetting = x()),
+            Q(mSetting.$$.fragment),
             M(s, "class", "flex flex-1"),
             M(
               u,
@@ -1035,8 +1056,8 @@ var app = (function () {
             p(r, c),
             p(r, d),
             ee(h, d, null),
-            p(d, bFilter),
-            ee(mFilter, d, null),
+            p(d, bSetting),
+            ee(mSetting, d, null),
             p(d, b),
             ee(ml, d, null),
             (v = !0);
@@ -1077,13 +1098,13 @@ var app = (function () {
               ctx: e,
             }),
             ml.$set(z);
-          const zFilter = {};
+          const zSetting = {};
           64 & t &&
-            (zFilter.$$scope = {
+            (zSetting.$$scope = {
               dirty: t,
               ctx: e,
             }),
-            mFilter.$set(zFilter);
+            mSetting.$set(zSetting);
         },
         i(e) {
           v ||
@@ -1092,7 +1113,7 @@ var app = (function () {
               Z(h.$$.fragment, e),
               Z(m.$$.fragment, e),
               Z(ml.$$.fragment, e),
-              Z(mFilter.$$.fragment, e),
+              Z(mSetting.$$.fragment, e),
               (v = !0));
         },
         o(e) {
@@ -1101,11 +1122,11 @@ var app = (function () {
             q(h.$$.fragment, e),
             q(m.$$.fragment, e),
             q(ml.$$.fragment, e),
-            q(mFilter.$$.fragment, e),
+            q(mSetting.$$.fragment, e),
             (v = !1);
         },
         d(e) {
-          e && y(t), te(i), te(a), te(h), te(m), te(ml), te(mFilter);
+          e && y(t), te(i), te(a), te(h), te(m), te(ml), te(mSetting);
         },
       }
     );
@@ -1154,9 +1175,9 @@ var app = (function () {
           });
       },
       () => {
-        n("filter", "Filter"),
-          pe("clickFilter", {
-            name: "clickFilter",
+        n("Settings", "Settings"),
+          pe("clickSetting", {
+            name: "clickSetting",
           });
       },
     ];
@@ -3143,7 +3164,7 @@ var app = (function () {
             s = [];
           n.store.forEach(function (o, a) {
             var l = function (n) {
-              var i = n ? o["name"][n] : o["name"],
+              var i = n ? getName(o)[n] : getName(o),
                 a =
                   "function" == typeof r
                     ? r(e, i)
@@ -3246,7 +3267,7 @@ var app = (function () {
           );
           e.feedback.selection = {
             index: selection.index,
-            value: selection.value["name"],
+            value: getName(selection.value),
             match: selection.match,
           };
         },
@@ -3905,10 +3926,10 @@ var app = (function () {
                 .getElementById("autoComplete")
                 .value.toLowerCase();
               return (e = e.sort((e, n) => {
-                let r = xt(t, e.value["name"].toLowerCase()),
-                  s = xt(t, n.value["name"].toLowerCase());
+                let r = xt(t, getName(e.value).toLowerCase()),
+                  s = xt(t, getName(n.value).toLowerCase());
                 return r === s
-                  ? e.value["name"] > n.value["name"]
+                  ? getName(e.value) > getName(n.value)
                     ? -1
                     : 1
                   : s > r
@@ -4125,7 +4146,7 @@ var app = (function () {
                 i,
                 "class",
                 "pointer-events-auto modal w-full limit-height mx-auto top-20 relative rounded-sm " +
-                (e[0] == "Filter"
+                (e[0] == "Settings"
                   ? "max-w-screen-md"
                   : e[0] == "about"
                     ? "max-w-screen-sm"
@@ -4248,7 +4269,7 @@ var app = (function () {
             artist +
             '\'s musics. Based on <a href="https://joywave-heardle.glitch.me/" title="Joywave Heardle">Joywave Heardle</a>.</p> \n\n<p class="mb-3">Each music is randomly chosen from ' +
             artist +
-            '\'s soundtrack.</p> \n\n\n\n <p class="mb-3">Want to make your own Heardle? Check out the <a href="https://github.com/nterrien/etrian-infinite-heardle">README</a>' +
+            '\'s soundtrack.</p> \n\n<p class="mb-3">The list of musics and officials names come from <a href="https://vgmdb.net/" title="VGMdb">VGMdb</a>. Unofficial names are names used before Etrian Odyssey OST had official translations. They were translated by fans and shared by users such as <a href="https://www.youtube.com/@Banim">Banim</a> and <a href="https://www.youtube.com/@TheFabulousTroupe">TheFabulousTroupe</a>.</p>\n\n\n\n <p class="mb-3">Want to make your own Heardle? Check out the <a href="https://github.com/nterrien/etrian-infinite-heardle">README</a>' +
             '</p>  \n\n\n\n <p class="text-xs mb-3 text-custom-line">Prepared with <a href="https://developers.soundcloud.com">Soundcloud</a>,\n    <a href="https://svelte.dev">Svelte</a>,\n    <a href="https://tailwindcss.com">Tailwind</a>,\n    <a href="https://fonts.google.com/noto/specimen/Noto+Serif+Display">Noto Serif Display</a>, <a href="https://fonts.google.com/noto/specimen/Noto+Sans">Noto Sans</a>,\n    <a href="https://iconsvg.xyz">IconSVG</a>, <a href="https://momentjs.com">momentjs</a>,\n    <a href="https://tarekraafat.github.io/autoComplete.js/#/">autocomplete.js</a>, and powered by <a href="https://github.com/">Github</a>. <a href="https://omakase.studio" title="Studio Omakase">Served omakase / お任せ</a>. '),
           M(n, "class", "text");
       },
@@ -4269,14 +4290,20 @@ var app = (function () {
     }
   }
 
-  function getOneGameOrArtistFromMusic(musicName) {
-    const splited = musicName["name"].split(" - ");
-    return splited[splited.length - 1].trim();
+  function getName(music) {
+    let names = []
+    if (!namesNotUsed.includes(0)) {
+      names.push(music.name)
+    }
+    if (!namesNotUsed.includes(1)) {
+      names.push(music.unofficial)
+    }
+    return [...new Set(names)].join("/") + " [" + music.help + "] - " + music.game
   }
 
   function getGameOrArtistFromMusicName(musicNameList) {
     return musicNameList
-      .map((a) => getOneGameOrArtistFromMusic(a))
+      .map((a) => a.game)
       .filter((m) => m.length > 0);
   }
 
@@ -4307,7 +4334,7 @@ var app = (function () {
                   '><a target="_blank" href="' +
                   mapUrl.get(s.id) +
                   '">' +
-                  s["name"] +
+                  getName(s) +
                   "</a></li>"
               )
               .join("") +
@@ -4331,7 +4358,7 @@ var app = (function () {
     }
   }
 
-  function Filtert(t) {
+  function Settingst(t) {
     let n;
     let games = new Set();
     getGameOrArtistFromMusicName(musicNameList).forEach((m) =>
@@ -4344,8 +4371,10 @@ var app = (function () {
     warning.innerHTML = "Warning: saving will reset your streak.";
     let filteredGames = [...removeGames];
     let filteredTags = [...removeTags];
+    let namesCopy = [...namesNotUsed];
     let gridGames = gridFilterDiv(filteredGames, games);
     let gridTags = gridFilterDiv(filteredTags, allTags);
+    let gridNames = gridFilterDiv(namesCopy, ["Official", "Unofficial"]);
     let save = w("button");
     save.innerHTML = "Save";
     M(save, "style", "margin-left: auto;margin-right: auto;");
@@ -4354,10 +4383,13 @@ var app = (function () {
       "class",
       "px-2 py-2 uppercase tracking-widest border-none font-semibold text-sm bg-custom-positive"
     );
-    M(save, "aria-label", "Save filters");
+    M(save, "aria-label", "Save settings");
     save.addEventListener("click", function () {
       saveFilteredGames(filteredGames);
       saveFilteredTags(filteredTags);
+      saveNamesNotUsed(namesCopy);
+      // TODO It would be better to close the popup here and uncomment the reload in saveFilteredGames and saveFilteredTags. 
+      window.location.reload();
     });
     let selectAllGames = w("button");
     selectAllGames.innerHTML = "Select All";
@@ -4466,6 +4498,9 @@ var app = (function () {
       explainationTags.innerHTML =
         "You can select tags below to filter musics.";
     }
+    explainationNames = w("div");
+    explainationNames.innerHTML =
+      "You can choose to use official names or unofficial names or both.";
     return {
       c() {
         (n = w("div")),
@@ -4481,6 +4516,8 @@ var app = (function () {
           p(n, explainationTags),
           p(n, ccTags),
           p(n, gridTags),
+          p(n, explainationNames),
+          p(n, gridNames),
           p(n, save);
       },
       p: e,
@@ -4530,9 +4567,9 @@ var app = (function () {
     return grid;
   }
 
-  class FilterCt extends se {
+  class SettingCt extends se {
     constructor(e) {
-      super(), re(this, e, null, Filtert, i, {});
+      super(), re(this, e, null, Settingst, i, {});
     }
   }
 
@@ -4721,7 +4758,7 @@ var app = (function () {
           (n = w("p")),
             (s = w("p")),
             (n.innerHTML =
-              'Have questions/run into bugs? DM Beignet0 on Reddit, beignetSan on Twitch, @beignet0.bsky.social on Bluesky, beignet1139 on Discord or create an issue in <a href="https://github.com/nterrien/etrian-infinite-heardle/issues" target="_blank">Github</a>!<br><br>You can also play <a href="https://nterrien.github.io/etrian-heardle/" title="Etrian Odyssey Heardle">Etrian Odyssey Heardle</a> daily.'),
+              'Have questions/run into bugs? DM Beignet0 on Reddit, beignetSan on Twitch, <a href="https://bsky.app/profile/beignet0.bsky.social">@beignet0.bsky.social</a> on Bluesky, beignet1139 on Discord or create an issue in <a href="https://github.com/nterrien/etrian-infinite-heardle/issues" target="_blank">Github</a>!<br><br>You can also play <a href="https://nterrien.github.io/etrian-heardle/" title="Etrian Odyssey Heardle">Etrian Odyssey Heardle</a> daily.'),
             (r = x()),
             (s = w("p")),
             (i = x()),
@@ -5438,8 +5475,8 @@ var app = (function () {
             (a = x()),
             (z = w("div")),
             (z.innerHTML =
-              '<div class="mr-4 w-8 text-custom-line"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M 2 5 C 2 3.34375 3.34375 2 5 2 L 19 2 C 20.65625 2 22 3.34375 22 5 L 22 6.171875 C 22 6.96875 21.683594 7.730469 21.121094 8.292969 L 15.292969 14.121094 C 15.105469 14.308594 15 14.5625 15 14.828125 L 15 17.171875 C 15 17.96875 14.683594 18.730469 14.121094 19.292969 L 11.917969 21.496094 C 10.84375 22.570312 9 21.808594 9 20.285156 L 9 14.828125 C 9 14.5625 8.894531 14.308594 8.707031 14.121094 L 2.878906 8.292969 C 2.316406 7.730469 2 6.96875 2 6.171875 Z M 2 5 "></path></svg></div> \n        <div><p>' +
-              "Select the game you want to play with." +
+              '<div class="mr-4 w-8 text-custom-line"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 0.84 0.84" fill="currentColor"><path d="m 0.21064201,0.16384524 -0.060461,-0.0254377 c -0.0125241,-0.005265 -0.0271453,-0.002378 -0.0364852,0.007208 C 0.07020427,0.19025183 0.03781367,0.24377014 0.01895607,0.30215 0.01488027,0.3147471 0.01954683,0.3284313 0.03062943,0.33625 L 0.0840516,0.3740414 c 0.01525925,0.0107628 0.02445733,0.0278213 0.02445733,0.0459668 0,0.0181399 -0.0091981,0.0351984 -0.02442187,0.0459442 L 0.03071213,0.5037268 C 0.01965911,0.5115518 0.01498024,0.5252353 0.01904472,0.5378211 0.03790758,0.596214 0.07031649,0.64973739 0.11383285,0.69436517 c 0.009346,0.009591 0.0239788,0.0124669 0.0365029,0.007185 l 0.0602159,-0.0253981 c 0.007538,-0.003227 0.0156018,-0.004813 0.0237543,-0.004813 0.0303354,3.057e-5 0.0557852,0.0219501 0.0590964,0.0508924 l 0.00732,0.063032 c 0.001536,0.0131463 0.0115789,0.0239091 0.0250304,0.0267909 0.0307961,0.006596 0.0622321,0.0100947 0.0937874,0.0104457 0.0323381,-3.5725e-4 0.063807,-0.00385 0.0946446,-0.0104401 0.0134515,-0.002887 0.0235181,-0.0136389 0.0250422,-0.0267909 l 0.007314,-0.0629839 c 0.002127,-0.018021 0.0129908,-0.0340378 0.029337,-0.0431416 0.016423,-0.009211 0.0363375,-0.0103155 0.0536643,-0.003001 l 0.0602052,0.0253981 c 0.0125241,0.005265 0.0271571,0.002378 0.0365087,-0.007185 0.0435151,-0.044625 0.0759253,-0.0981512 0.0947881,-0.15654294 0.004076,-0.0125972 -5.9072e-4,-0.0262926 -0.0116851,-0.0341114 l -0.0534222,-0.0377519 c -0.0152475,-0.0107514 -0.0242387,-0.0278156 -0.0242387,-0.0459555 0,-0.0181399 0.008991,-0.0351984 0.0242152,-0.0459384 l 0.0534517,-0.0378141 c 0.0110472,-0.007813 0.0157377,-0.0214916 0.0116793,-0.0340774 -0.0188274,-0.0584439 -0.0512245,-0.11202726 -0.0947373,-0.15671563 -0.00934,-0.009591 -0.023967,-0.0124839 -0.036491,-0.007213 l -0.0604746,0.0254433 c -0.0172383,0.00723 -0.03707,0.006166 -0.0534044,-0.002887 -0.0163344,-0.009042 -0.027228,-0.0249904 -0.0293606,-0.0429718 l -0.00726,-0.06293186 c -0.001477,-0.01299911 -0.0113425,-0.02368825 -0.0245873,-0.02671726 -0.0622706,-0.01422771 -0.12715158,-0.01422771 -0.18942209,0 -0.0132447,0.0030005 -0.0230868,0.01371815 -0.0245873,0.02671726 l -0.007266,0.06302242 c -0.002068,0.018021 -0.0125004,0.0340207 -0.0288526,0.0430907 -0.0163463,0.00907 -0.0366624,0.0101343 -0.0539597,0.002887 z M 0.4200004,0.28581772 c 0.0773165,0 0.13999641,0.0600705 0.13999641,0.1341682 0,0.0740983 -0.06268,0.13416873 -0.13999641,0.13416873 -0.0773165,0 -0.13999701,-0.0600705 -0.13999701,-0.13416873 0,-0.0740977 0.0626805,-0.1341682 0.13999701,-0.1341682 z"></path></svg></div> \n        <div><p>' +
+              "Select settings such as filter on games or tags (Battle, Event or Location) and whether or not you want to use the official names." +
               "</p></div>"),
             (v = x()),
             (zz = w("div")),
@@ -6147,10 +6184,10 @@ var app = (function () {
     );
   }
 
-  function Filtern(t) {
+  function Settingn(t) {
     let n, r;
     return (
-      (n = new FilterCt({})),
+      (n = new SettingCt({})),
       {
         c() {
           Q(n.$$.fragment);
@@ -6174,7 +6211,7 @@ var app = (function () {
 
   function Fn(e) {
     let t, n, r, s;
-    const i = [Rn, Wn, In, Hn, MLn, Filtern],
+    const i = [Rn, Wn, In, Hn, MLn, Settingn],
       o = [];
 
     function a(e, t) {
@@ -6188,7 +6225,7 @@ var app = (function () {
               ? 3
               : "music-list" == e[10].name
                 ? 4
-                : "filter" == e[10].name
+                : "Settings" == e[10].name
                   ? 5
                   : -1;
     }
@@ -6601,8 +6638,8 @@ var app = (function () {
         let t = e.detail.currentSong;
         let musicString = musicNameList.find((a) => a.id == l.correctAnswer);
         // console.log("current song", l);
-        n(2, (l.artist = musicString["name"].split(" - ")[1]), l),
-          n(2, (l.title = musicString["name"].split(" - ")[0]), l),
+        n(2, (l.artist = musicString.game), l),
+          n(2, (l.title = getName(musicString).split(" - ")[0]), l),
           n(2, (l.img = t.artwork_url), l),
           n(2, (l.duration = t.duration), l),
           n(2, (l.genre = t.genre), l),
@@ -6630,7 +6667,7 @@ var app = (function () {
           r = e.detail.isSkipped,
           s = !1;
         var o;
-        var findMusic = musicNameList.find((m) => m["name"] == t);
+        var findMusic = musicNameList.find((m) => getName(m) == t);
         r ||
           !findMusic ||
           findMusic.id != l.correctAnswer ||

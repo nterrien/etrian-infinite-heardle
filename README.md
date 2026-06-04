@@ -7,12 +7,13 @@ Each music is randomly chosen from Etrian Odyssey's soundtrack. The code for the
 code edited from: [WJSN Heardle](https://github.com/jeroldcamacho/wjsn-heardle)
 <br />
 <br />
-HOW TO RUN INFINITE HEARDLE LOCALLY:
+## How to run Infinite Heardle locally:
 Open **index.html** with your browser (Firefox, Chromium)
 <br />
 <br />
-HOW TO MAKE YOUR OWN INFINITE HEARDLE (UDPATED on **2026/01/09**)
-(If you want an infinite heardle that includes translations you can check the readme of [Pokémon Infinite Heardle](https://github.com/nterrien/pkmn-infinite-heardle))
+## How to make your own Infinite Heardle (Updated on **2026/06/04**)
+(If you want an infinite heardle that includes translations you can check the readme of [Pokémon Infinite Heardle](https://github.com/nterrien/pkmn-infinite-heardle).)
+### I recommand checking the branch [no-unofficial-names](https://github.com/nterrien/etrian-infinite-heardle/tree/no-unofficial-names) instead of this one to remove the unofficial names that is a need really specific to this game.
 
 1. **Fork this project** to create your own copy of the code
 2. **Rename the project** with the URL that you'd like to Heardle to live at, by going to **Settings > Repository name**
