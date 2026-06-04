@@ -1331,11 +1331,3 @@ a.svelte-1d3p4dy.svelte-1d3p4dy {
         grid-template-columns: 1fr;
     }
 }
-
-.lang-choice {
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-}
