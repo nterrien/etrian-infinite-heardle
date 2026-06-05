@@ -124,7 +124,7 @@ var app = (function () {
     if (oldRemoveGames.size != filteredGames.length || !filteredGames.every(g => oldRemoveGames.has(g))) {
       removeGames = filteredGames;
       localStorage.setItem(removeGamesLocationStorage, JSON.stringify(filteredGames));
-      // window.location.reload();
+      window.location.reload();
     }
   }
 
@@ -133,7 +133,7 @@ var app = (function () {
     if (oldRemoveTags.size != filteredTags.length || !filteredTags.every(t => oldRemoveTags.has(t))) {
       removeTags = filteredTags;
       localStorage.setItem(removeTagsLocationStorage, JSON.stringify(filteredTags));
-      // window.location.reload();
+      window.location.reload();
     }
   }
 
@@ -4388,8 +4388,7 @@ var app = (function () {
       saveFilteredGames(filteredGames);
       saveFilteredTags(filteredTags);
       saveNamesNotUsed(namesCopy);
-      // TODO It would be better to close the popup here and uncomment the reload in saveFilteredGames and saveFilteredTags. 
-      window.location.reload();
+      t[0](); // Close modal
     });
     let selectAllGames = w("button");
     selectAllGames.innerHTML = "Select All";
@@ -4569,7 +4568,7 @@ var app = (function () {
 
   class SettingCt extends se {
     constructor(e) {
-      super(), re(this, e, null, Settingst, i, {});
+      super(), re(this, e, yn, Settingst, i, {});
     }
   }
 
@@ -6188,6 +6187,7 @@ var app = (function () {
     let n, r;
     return (
       (n = new SettingCt({})),
+      n.$on("close", t[19]),
       {
         c() {
           Q(n.$$.fragment);
